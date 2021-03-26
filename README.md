@@ -6,5 +6,6 @@ offer senior-citizen who are not well known about elementary IT knowledge and gi
 
 # VERSION
 
-Released version 0.0.1 (2021.03.25) :
-add bootstrap files(html,css,js)
+### Released version 0.0.1 (2021.03.25) :
+
+  add bootstrap files(html,css,js)
