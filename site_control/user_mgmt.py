@@ -4,10 +4,10 @@ from db_model.mysql import conn_mysqldb
 
 class User(UserMixin):
 
-    def __init__(self,user_id, user_email, blog_id):
+    def __init__(self,user_id, user_email, password):
         self.id=user_id
         self.user_email=user_email
-        self.blog_id=blog_id
+        self.password=password
     
     def get_id(self):
         return str(self.id)
