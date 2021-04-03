@@ -6,7 +6,7 @@ from site_control.site_sessionmgmt import BlogSession
 #login_user:서버단에서 세션 쿠키셋관련 임포트
 #current_user: 세션확인 할 때 사용
 #main코드에 app에 최초 before request함수를 정의해둬서 블루프린트로 정의된 라우팅으로 들어와도 자동으로 before requset가 실행됨.
-senior_school=Blueprint('site_bp',__name__)
+senior_school=Blueprint('senior_school',__name__)
 
 @senior_school.route('/engA')
 def engA():
