@@ -1,25 +1,25 @@
 from flask import Flask,Blueprint,request,render_template,redirect,make_response,jsonify,url_for,session
-from blog_control.user_mgmt import User
+from site_control.user_mgmt import User
 from flask_login import login_user,current_user,logout_user
 import datetime
-from blog_control.session_mgmt import BlogSession
+from site_control.site_sessionmgmt import BlogSession
 #login_user:서버단에서 세션 쿠키셋관련 임포트
 #current_user: 세션확인 할 때 사용
 #main코드에 app에 최초 before request함수를 정의해둬서 블루프린트로 정의된 라우팅으로 들어와도 자동으로 before requset가 실행됨.
-blog_abtest=Blueprint('blog_bp',__name__)
+senior_school=Blueprint('site_bp',__name__)
 
-@blog_abtest.route('/engA')
+@senior_school.route('/engA')
 def engA():
     if current_user.is_authenticated:#세션확인 후 구독이력 확인
         return render_template("blog_engA.html",user_email=current_user.user_email)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
         return render_template('blog_engA.html')
-@blog_abtest.route('/engB')
+@senior_school.route('/engB')
 def engB():
     return render_template("blog_engB.html")
 
 
-@blog_abtest.route('/fullstack')
+@senior_school.route('/fullstack')
 def fullstack():    
     if current_user.is_authenticated:#세션확인 후 구독이력 확인
         web_page=BlogSession.get_blog_page(current_user.blog_id)#구독시 페이지정보  
@@ -33,14 +33,14 @@ def fullstack():
         return render_template(web_page)
 
 
-@blog_abtest.route('/logout')
+@senior_school.route('/logout')
 def logout():
     User.delete(user_id=current_user.id)
     logout_user() #어차피 라우팅 리퀘스트시 세션에 로그인 정보가 있다.
     return redirect(url_for('blog_bp.fullstack'))
 
 
-@blog_abtest.route('/set_email',methods=['GET','POST'])
+@senior_school.route('/set_email',methods=['GET','POST'])
 def set_email():
     if request.method=='GET':
         #print('http check',request.headers)
@@ -64,5 +64,7 @@ def set_email():
         #return redirect(url_for(request.form['blog_id']))
         return redirect('/blueprint/fullstack')
 
-    
-
+@senior_school.route('/board_main',methods=['GET','POST'])
+def board_main():
+    print('site control에서 article_mgmt안에 게시판 관련된 클래스 선언 후(mysql과 연결) 관련 내용을 받아와서 일단 프린트 하도록 만들기.')
+    #site control에서 article_mgmt안에 게시판 관련된 클래스 선언 후(mysql과 연결) 관련 내용을 받아와서 일단 프린트 하도록 만들기.
