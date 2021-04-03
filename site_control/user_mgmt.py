@@ -4,10 +4,12 @@ from db_model.mysql import conn_mysqldb
 
 class User(UserMixin):
 
-    def __init__(self,user_id, user_email, password):
+    def __init__(self,user_id, user_email, password,user_name):
         self.id=user_id
-        self.user_email=user_email
         self.password=password
+        self.user_email=user_email
+        self.name=user_name
+        
     
     def get_id(self):
         return str(self.id)
@@ -22,35 +24,35 @@ class User(UserMixin):
         user=db_cursor.fetchone()
         if not user:
             return None
-        user=User(user_id=user[0], user_email=user[1], blog_id=user[2])
+        user=User(user_id=user[0], password=user[1], user_email=user[2],user_name=user[3])
         return user
 
 
     @staticmethod
-    def find(user_email):
+    def find(user_id):
         mysql_db=conn_mysqldb()
         db_cursor=mysql_db.cursor()
-        sql="SELECT * FROM user_info WHERE USER_EMAIL='"+str(user_email)+"'"
+        sql="SELECT * FROM user_info WHERE USER_ID='"+str(user_id)+"'"
         #print(sql) 터미널 등에서 코드상으로 확인후 작업하는게 좋다. 에러가 잘뜬단다.
         db_cursor.execute(sql)
         user=db_cursor.fetchone() 
         if not user:
             return None
-        user=User(user_id=user[0], user_email=user[1], blog_id=user[2])
+        user=User(user_id=user[0], password=user[1], user_email=user[2],user_name=user[3])
         return user
 
 
 
     @staticmethod
-    def create(user_email, blog_id):
-        user=User.find(user_email)
+    def create(user_id, password, user_email,user_name):
+        user=User.find(user_id)
         if user==None:
             mysql_db=conn_mysqldb()
             db_cursor=mysql_db.cursor()
-            sql="INSERT INTO user_info (USER_EMAIL, BLOG_ID) VALUES ('%s','%s')"%(str(user_email),str(blog_id))
+            sql="INSERT INTO user_info (USER_ID, PASSWORD, USER_EMAIL,USER_NAME) VALUES ('%s','%s','%s')"%(str(user_id),str(password),str(user_email),str(user_name))
             db_cursor.execute(sql)
             mysql_db.commit() #mysql에 데이터 변형이 일어나는 것이므로 커밋을 하는 게 좋다.
-            return User.find(user_email)
+            return User.find(user_id)
         else:
             return user
             
