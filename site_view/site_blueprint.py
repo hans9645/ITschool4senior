@@ -24,6 +24,10 @@ def bullet():
 def login():
     return render_template("login.html")
 
+@senior_school.route('/register')
+def register():
+    return make_response("회원가입창",201)
+
 
 @senior_school.route('/fullstack')
 def fullstack():    
@@ -46,7 +50,7 @@ def logout():
     return redirect(url_for('blog_bp.fullstack'))
 
 
-@senior_school.route('/set_email',methods=['GET','POST'])
+@senior_school.route('/set_login',methods=['GET','POST'])
 def set_email():
     if request.method=='GET':
         #print('http check',request.headers)
@@ -63,7 +67,8 @@ def set_email():
         #print('blog_id',request.form['blog_id'])
         #print('only user_email',request.form['user_email'])
         #post방식으로 데이터를 가져올 수 있다. vue에서 했었음
-        user=User.create(request.form['user_email'],request.form['blog_id'])
+        ID=request.form['user_id']
+        PW=request.form['password']
         login_user(user,remember=True, duration=datetime.timedelta(days=30))
         #로그인 기록유지 시킴 remember me,flask_login google검색
         #세션정보가 플라스크에서 만들어져 셋쿠키로 웹브라우저에 전송, 웹브라우저는 서버주소와 쿠키를 저장,관리를 하면서 다음에 해당서버에 request를 할 때 사용한다. 

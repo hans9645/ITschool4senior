@@ -37,17 +37,17 @@
   </head>
   <body class="text-center">
     
-<main class="form-signin">
-  <form>
+<main class="form-signin" methods="POST">
+  <form action="/set_login">
     <img class="mb-4" src="../static/brand/login_icon.png" alt="" width="90" height="90">
     <h1 class="h3 mb-3 fw-normal">시니어를 위한 IT 교육</h1>
 
     <div class="form-floating">
-      <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-      <label for="floatingInput">이메일 or ID</label>
+      <input type="ID" class="form-control" id="floatingInput" placeholder="ID" name="user_id">
+      <label for="floatingInput">ID</label>
     </div>
     <div class="form-floating">
-      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
       <label for="floatingPassword">비밀번호</label>
     </div>
 

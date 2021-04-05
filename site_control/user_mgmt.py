@@ -4,10 +4,9 @@ from db_model.mysql import conn_mysqldb
 
 class User(UserMixin):
 
-    def __init__(self,user_id, user_email, password,user_name):
+    def __init__(self,user_id, password,user_name):
         self.id=user_id
         self.password=password
-        self.user_email=user_email
         self.name=user_name
         
     
@@ -24,7 +23,7 @@ class User(UserMixin):
         user=db_cursor.fetchone()
         if not user:
             return None
-        user=User(user_id=user[0], password=user[1], user_email=user[2],user_name=user[3])
+        user=User(user_id=user[0], password=user[1],user_name=user[2])
         return user
 
 
@@ -38,18 +37,18 @@ class User(UserMixin):
         user=db_cursor.fetchone() 
         if not user:
             return None
-        user=User(user_id=user[0], password=user[1], user_email=user[2],user_name=user[3])
+        user=User(user_id=user[0], password=user[1],user_name=user[2])
         return user
 
 
 
     @staticmethod
-    def create(user_id, password, user_email,user_name):
+    def create(user_id, password,user_name):
         user=User.find(user_id)
         if user==None:
             mysql_db=conn_mysqldb()
             db_cursor=mysql_db.cursor()
-            sql="INSERT INTO user_info (USER_ID, PASSWORD, USER_EMAIL,USER_NAME) VALUES ('%s','%s','%s')"%(str(user_id),str(password),str(user_email),str(user_name))
+            sql="INSERT INTO user_info (USER_ID, PASSWORD,USER_NAME) VALUES ('%s','%s','%s')"%(str(user_id),str(password),str(user_name))
             db_cursor.execute(sql)
             mysql_db.commit() #mysql에 데이터 변형이 일어나는 것이므로 커밋을 하는 게 좋다.
             return User.find(user_id)
