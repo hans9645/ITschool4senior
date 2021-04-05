@@ -8,15 +8,21 @@ from site_control.site_sessionmgmt import BlogSession
 #main코드에 app에 최초 before request함수를 정의해둬서 블루프린트로 정의된 라우팅으로 들어와도 자동으로 before requset가 실행됨.
 senior_school=Blueprint('senior_school',__name__)
 
-@senior_school.route('/engA')
+@senior_school.route('/home')
 def engA():
     if current_user.is_authenticated:#세션확인 후 구독이력 확인
-        return render_template("blog_engA.html",user_email=current_user.user_email)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
+        return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
-        return render_template('blog_engA.html')
-@senior_school.route('/engB')
-def engB():
-    return render_template("blog_engB.html")
+        return render_template('home.html')
+# <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
+
+@senior_school.route('/bullet')
+def bullet():
+    return render_template("bulletBoard.html")
+
+@senior_school.route('/login')
+def login():
+    return render_template("login.html")
 
 
 @senior_school.route('/fullstack')
