@@ -5,6 +5,9 @@ from site_view import site_blueprint
 import os #추후 확장을 위한 임포트
 from site_control.user_mgmt import User
 
+from flask_sqlalchemy import SQLAlchemy #sql 알케미
+from user_db import db  #user_db에 있는 db를 가져온다
+
 #request argument를 받는데 사용함.
 #make_response http status를 받기 위해
 #LoginManager:세션 관리 등록, current_user:객체 로그인 정보를 참조하기위해
@@ -18,6 +21,23 @@ from site_control.user_mgmt import User
 os.environ['OAUTHLIB_INSECURE_TRANSPORT']='1'
 
 app= Flask(__name__,static_url_path="/static")
+
+#############################
+#app config
+#현재 있는 파일의 디렉토리 절대 경로
+basdir = os.path.abspath(os.path.dirname(__file__))
+#basdir 경로 안에 DB파일 만들기
+dbfile = os,path.join(db_model, 'db.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + dbfile
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+#app.secret_key = 'manyrandombyte'
+
+#db = SQLAlchemy(app)
+db.init_app(app)
+db_create_all()
+################################
+
 #서버 생성, static_url_path설정을 통해 static폴더에서 html의 필요한 폴더를 가져오라고 함.
 CORS(app)#CORS: 자바스크립트를 사용한 api 등의 리소스 호출시 동일 출처(같은 호스트네임)가 아니더라도 정상적으로 사용 가능하도록 도와주는 방법
 app.secret_key="secret_key" #보안을 높이려면 바뀌는 코드를 넣어야하지만 그럴 경우 껏다키면 세션이 사라짐.
@@ -25,7 +45,7 @@ app.secret_key="secret_key" #보안을 높이려면 바뀌는 코드를 넣어�
 app.register_blueprint(site_blueprint.senior_school,url_prefix="/")
 login_manager=LoginManager()
 login_manager.init_app(app) #flask객체를 로그인매니저에 등록.
-login_manager.session_protection="strong" #세션코드를 보다 복잡하게 만드는 코드
+login_manager.segission_protection="strong" #세션코드를 보다 복잡하게 만드는 코드
 # ->누군가 로그인을 할 경우 로그인 매니저에서 세션 관리
 
 @login_manager.user_loader
