@@ -20,13 +20,10 @@ def engA():
 def bullet():
     return render_template("bulletBoard.html")
 
-@senior_school.route('/login')
+@senior_school.route('/login_register')
 def login():
-    return render_template("login.html")
+    return render_template("login_register.html")
 
-@senior_school.route('/register')
-def register():
-    return make_response("회원가입창",201)
 
 
 @senior_school.route('/fullstack')
