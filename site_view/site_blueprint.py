@@ -3,6 +3,13 @@ from site_control.user_mgmt import User
 from flask_login import login_user,current_user,logout_user
 import datetime
 from site_control.site_sessionmgmt import BlogSession
+
+#sqlalchemy에서 Members 클래스 가져온다
+from db_model.sqlalchemy import Members
+#register에서 DB에 저장하려면 db객체가 필요한데 다른 데서 끌고올 방법을 모르겠네요...
+from flask_sqlalchemy import SQLAlchemy
+
+
 #login_user:서버단에서 세션 쿠키셋관련 임포트
 #current_user: 세션확인 할 때 사용
 #main코드에 app에 최초 before request함수를 정의해둬서 블루프린트로 정의된 라우팅으로 들어와도 자동으로 before requset가 실행됨.
@@ -10,18 +17,90 @@ senior_school=Blueprint('senior_school',__name__)
 
 @senior_school.route('/home')
 def engA():
+    #로그인 세션정보('userid')가 있을 경우
+    if not session.get('user_id'):
+        return render_template('home.html')
+    #로그인 세션정보가 없을 경우
+    else:
+        user_id=session.get('user_id')
+        return render_template('home.html', user_id=user_id)
+        '''
     if current_user.is_authenticated:#세션확인 후 구독이력 확인
         return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
-        return render_template('home.html')
+        return render_template('home.html')'''
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
+
+##sqlalchemy 연동 확인
+@senior_school.route('/db')
+def select_all():
+    user_info=Members.query.all()
+    return render_template("db.html", user_info=user_info)
+######################
 
 @senior_school.route('/bullet')
 def bullet():
     return render_template("bulletBoard.html")
 
-@senior_school.route('/login_register')
+###회원가입
+@senior_school.route('/set_register', methods=['GET','POST'])
+def register():
+    db = SQLAlchemy()   #그냥 이렇게 갖고오면 아이디 생성 시간이 현재 날짜와 차이가 난다
+    if request.method == 'GET':
+        return render_template("login_register.html")
+    else:
+        id=request.form.get('id')
+        user_id=request.form.get('user_id')
+        user_name=request.form.get('user_name')
+        password=request.form.get('password')
+        create_at=request.form.get('create_at')
+
+        if not(user_id and user_name and password):
+            return "모두 입력해주세요"  #이 입력란은 필요없을듯
+        else:
+            user = Members(id, user_id, user_name, password, create_at)
+            #user.id= id
+            user.user_id = user_id
+            user.password = password
+            user.user_name = user_name
+            #user.create_at = create_at
+
+            db.session.add(user)
+            db.session.commit()
+            #return "회원가입 완료"
+        return redirect('/login_register')
+#############################
+
+######로그인
+@senior_school.route('/set_login', methods=['GET','POST'])
 def login():
+    if request.method == 'GET':
+        return render_template("login_register.html")
+    else:
+        user_id=request.form['user_id']
+        password=request.form['password']
+        try:
+            # ID/PW 조회Query 실행
+            data=Members.query.filter_by(user_id=user_id, password=password).first()
+            if data is not None:    #쿼리 데이터가 존재하면
+                session['user_id'] = user_id    #user_id를 세션에 저장한다.
+                return redirect('/home')
+            else:
+                return '존재하지 않는 아이디입니다.' #쿼리 데이터가 없으면 출력
+        except:
+            return "예외상황 발생"  #예외 상황 발생시 출력
+##########################################################
+
+#####로그아웃
+@senior_school.route('/logout')
+def logout():
+    session.clear()
+    #session.pop('user_id', None)
+    redirect('/login_register')
+############################
+
+@senior_school.route('/login_register', methods=['GET','POST'])
+def login1():   #위에 로그인 함수와 헷갈릴까봐 login1로 설정
     return render_template("login_register.html")
 
 
@@ -39,7 +118,7 @@ def fullstack():
         #로그인하지않은 방문자의 IP등을 세션라이브러리로부터 받아와서 넣는다.
         return render_template(web_page)
 
-
+'''
 @senior_school.route('/logout')
 def logout():
     User.delete(user_id=current_user.id)
@@ -71,6 +150,7 @@ def set_email():
         #세션정보가 플라스크에서 만들어져 셋쿠키로 웹브라우저에 전송, 웹브라우저는 서버주소와 쿠키를 저장,관리를 하면서 다음에 해당서버에 request를 할 때 사용한다. 
         #return redirect(url_for(request.form['blog_id']))
         return redirect('/blueprint/fullstack')
+'''
 
 @senior_school.route('/board_main',methods=['GET','POST'])
 def board_main():
