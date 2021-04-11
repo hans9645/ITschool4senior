@@ -40,7 +40,7 @@ def bullet():
 def set_register():
     user=User.create(request.form['user_id'],request.form['password'],request.form['user_name'])
     #login_user(user,remember=True, duration=datetime.timedelta(days=30))
-    return redirect('/home')
+    return render_template('home.html', user_id=request.form['user_id'])
 
 
 ######로그인
