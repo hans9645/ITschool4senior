@@ -5,9 +5,6 @@ from site_view import site_blueprint
 import os #추후 확장을 위한 임포트
 from site_control.user_mgmt import User
 
-######alchemy########
-from flask_sqlalchemy import SQLAlchemy
-#####################
 
 #request argument를 받는데 사용함.
 #make_response http status를 받기 위해
@@ -26,16 +23,7 @@ app= Flask(__name__,static_url_path="/static")
 CORS(app)#CORS: 자바스크립트를 사용한 api 등의 리소스 호출시 동일 출처(같은 호스트네임)가 아니더라도 정상적으로 사용 가능하도록 도와주는 방법
 app.secret_key="secret_key" #보안을 높이려면 바뀌는 코드를 넣어야하지만 그럴 경우 껏다키면 세션이 사라짐.
 
-#### database 설정 파일
-# 내가 사용 할 DB URI
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:dldlstjq4994@localhost:3306/itschool4senior?charset=utf8"
-# 수정사항에 대한 TRACK
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-'''db.init_app(app)
-db.app=app
-db.create_all()'''
-#############################
+
 
 app.register_blueprint(site_blueprint.senior_school,url_prefix="/")
 login_manager=LoginManager()

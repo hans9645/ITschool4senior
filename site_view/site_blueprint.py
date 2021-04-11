@@ -5,9 +5,9 @@ import datetime
 from site_control.site_sessionmgmt import BlogSession
 
 #sqlalchemy에서 Members 클래스 가져온다
-from db_model.sqlalchemy import Members
+
 #register에서 DB에 저장하려면 db객체가 필요한데 다른 데서 끌고올 방법을 모르겠네요...
-from flask_sqlalchemy import SQLAlchemy
+
 
 
 #login_user:서버단에서 세션 쿠키셋관련 임포트
@@ -31,45 +31,17 @@ def engA():
         return render_template('home.html')'''
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
 
-##sqlalchemy 연동 확인
-@senior_school.route('/db')
-def select_all():
-    user_info=Members.query.all()
-    return render_template("db.html", user_info=user_info)
-######################
 
 @senior_school.route('/bullet')
 def bullet():
     return render_template("bulletBoard.html")
 
-###회원가입
-@senior_school.route('/set_register', methods=['GET','POST'])
-def register():
-    db = SQLAlchemy()   #그냥 이렇게 갖고오면 아이디 생성 시간이 현재 날짜와 차이가 난다
-    if request.method == 'GET':
-        return render_template("login_register.html")
-    else:
-        id=request.form.get('id')
-        user_id=request.form.get('user_id')
-        user_name=request.form.get('user_name')
-        password=request.form.get('password')
-        create_at=request.form.get('create_at')
+@senior_school.route('/set_register', methods=['POST'])
+def set_register():
+    user=User.create(request.form['user_id'],request.form['password'],request.form['user_name'])
+    #login_user(user,remember=True, duration=datetime.timedelta(days=30))
+    return redirect('/home')
 
-        if not(user_id and user_name and password):
-            return "모두 입력해주세요"  #이 입력란은 필요없을듯
-        else:
-            user = Members(id, user_id, user_name, password, create_at)
-            #user.id= id
-            user.user_id = user_id
-            user.password = password
-            user.user_name = user_name
-            #user.create_at = create_at
-
-            db.session.add(user)
-            db.session.commit()
-            #return "회원가입 완료"
-        return redirect('/login_register')
-#############################
 
 ######로그인
 @senior_school.route('/set_login', methods=['GET','POST'])
