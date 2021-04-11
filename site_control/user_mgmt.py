@@ -14,7 +14,7 @@ class User(UserMixin):
         
     
     def get_id(self):
-        return str(self.id)
+        return str(self.user_id)
 
     @staticmethod
     def get(user_id):
@@ -46,8 +46,9 @@ class User(UserMixin):
             mysql_db.execute("INSERT INTO user_info(user_id,password, user_name) VALUES ('%s','%s','%s')"%(str(user_id),str(password),str(user_name)))
             return User.find(user_id)
         else:
-            return user
+            return None
             
+    
 
     @staticmethod
     def delete(user_id):
