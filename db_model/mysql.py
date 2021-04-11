@@ -1,21 +1,33 @@
-import pymysql
+from sqlalchemy import create_engine,text
 
-MYSQL_HOST='localhost'
-MYSQL_CONN=pymysql.connect(
-    host= MYSQL_HOST ,
-    port=3306 ,
-    user='root',
-    passwd='dldlstjq4994' ,
-    db='itschool4senior',
-    charset='utf8'
-)
+db = {
+    'user' : '',
+    'passwd':'',
+    'database' : 'itschool4senior',
+    'charset' : 'utf8',
+    'host' : 'localhost' ,
+    'port':3306 
+}
+
+db_url=f"mysql+mysqlconnector://{db['user']}:{db['passwd']}@{db['host']}:{db['port']}/{db['database']}?charset=utf8"
+
 
 
 def conn_mysqldb():
-    if not MYSQL_CONN.open:
-        MYSQL_CONN.close()
-        MYSQL_CONN.ping(reconnect=True)
-    return MYSQL_CONN
+    db_conn=create_engine(db_url, encoding='utf-8',max_overflow=0)
+    db_conn.connect()
+    if not db_conn.open:
+        db_conn.close()
+        db_conn.ping(reconnect=True)
+    return db_conn
 #데이터베이스와 연결이 끊길 경우 확인 후 다시 연결하거나 이미 연결되어 있는 경우에는 
 #return 으로 연결된 객체를 반환하도록 함.
 
+
+# def conn_mysqldb():
+#     if not MYSQL_CONN.open:
+#         MYSQL_CONN.close()
+#         MYSQL_CONN.ping(reconnect=True)
+#     return MYSQL_CONN
+# #데이터베이스와 연결이 끊길 경우 확인 후 다시 연결하거나 이미 연결되어 있는 경우에는 
+# #return 으로 연결된 객체를 반환하도록 함.
