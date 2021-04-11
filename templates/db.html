@@ -1,0 +1,24 @@
+<!-- mysql, sqlalchemy 연동 확인하기 위한 html.
+ 제대로 연동 됐으면 id, user_id, password, name, datetime이 뜬다-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<table>
+{% for member in user_info %}
+    <tr>
+        <td>{{ member.id }}</td>
+        <td>{{ member.user_id }}</td>
+        <td>{{ member.password }}</td>
+        <td>{{ member.user_name }}</td>
+        <td>{{ member.create_at }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
