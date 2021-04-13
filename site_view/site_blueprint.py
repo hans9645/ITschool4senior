@@ -17,6 +17,7 @@ senior_school=Blueprint('senior_school',__name__)
 
 @senior_school.route('/home')
 def engA():
+    '''
     #로그인 세션정보가 없을 경우
     if not session.get('user_id'):
         return render_template('home.html')
@@ -24,11 +25,14 @@ def engA():
     else:
         user_id=session.get('user_id')
         return render_template('home.html', user_id=user_id)
-        '''
-    if current_user.is_authenticated:#세션확인 후 구독이력 확인
-        return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
+    '''
+    #세션확인 후 구독이력 확인
+    if current_user.is_authenticated:
+        return render_template('home.html')
+        #return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
-        return render_template('home.html')'''
+        return render_template('home.html')
+   
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
 
 
@@ -44,9 +48,9 @@ def set_register():
         return "같은 아이디가 존재합니다, 400"
     
     #session['user_id'] = user.user_id    #user_id를 세션에 저장한다.
+    #return render_template('home.html', user_id=request.form['user_id'])
     login_user(user,remember=True, duration=datetime.timedelta(days=30))
-    return render_template('home.html', user_id=request.form['user_id'])
-    #return redirect('/home') 
+    return redirect('/home') 
 
 
 ######로그인
@@ -63,7 +67,8 @@ def login():
         user = User.find(user_id)
 
         if user.user_id == user_id and user.password == password:    #쿼리 데이터가 존재하면
-            session['user_id'] = user_id    #user_id를 세션에 저장한다.
+            login_user(user,remember=True, duration=datetime.timedelta(days=30))
+            #session['user_id'] = user_id    #user_id를 세션에 저장한다.
             return redirect("/home")
         else:
             return '비밀번호가 맞지 않습니다, 400' #아이디는 맞는데 비번 틀릴때
@@ -76,10 +81,8 @@ def login():
 @senior_school.route('/logout')
 def logout():
     logout_user() #어차피 라우팅 리퀘스트시 세션에 로그인 정보가 있다.
-    return redirect(url_for('blog_bp.fullstack'))
-    #session.clear() #세션의 모든 값 삭제
-    #session.pop('user_id', None)    #세션에서 제거
-    #return redirect('/login_register')
+    return render_template("home.html")
+    #return redirect('/home')
 ############################
 
 @senior_school.route('/login_register', methods=['GET','POST'])
