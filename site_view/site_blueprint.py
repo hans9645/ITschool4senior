@@ -17,18 +17,22 @@ senior_school=Blueprint('senior_school',__name__)
 
 @senior_school.route('/home')
 def engA():
-    #로그인 세션정보('userid')가 있을 경우
+    '''
+    #로그인 세션정보가 없을 경우
     if not session.get('user_id'):
         return render_template('home.html')
-    #로그인 세션정보가 없을 경우
+    #로그인 세션정보('userid')가 있을 경우
     else:
         user_id=session.get('user_id')
         return render_template('home.html', user_id=user_id)
-        '''
-    if current_user.is_authenticated:#세션확인 후 구독이력 확인
-        return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
+    '''
+    #세션확인 후 구독이력 확인
+    if current_user.is_authenticated:
+        return render_template('home.html')
+        #return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
-        return render_template('home.html')'''
+        return render_template('home.html')
+   
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
 
 
@@ -39,8 +43,14 @@ def bullet():
 @senior_school.route('/set_register', methods=['POST'])
 def set_register():
     user=User.create(request.form['user_id'],request.form['password'],request.form['user_name'])
-    #login_user(user,remember=True, duration=datetime.timedelta(days=30))
-    return render_template('home.html', user_id=request.form['user_id'])
+    
+    if(user == None):
+        return "같은 아이디가 존재합니다, 400"
+    
+    #session['user_id'] = user.user_id    #user_id를 세션에 저장한다.
+    #return render_template('home.html', user_id=request.form['user_id'])
+    login_user(user,remember=True, duration=datetime.timedelta(days=30))
+    return redirect('/home') 
 
 
 ######로그인
@@ -51,24 +61,28 @@ def login():
     else:
         user_id=request.form['user_id']
         password=request.form['password']
-        try:
-            # ID/PW 조회Query 실행
-            data=Members.query.filter_by(user_id=user_id, password=password).first()
-            if data is not None:    #쿼리 데이터가 존재하면
-                session['user_id'] = user_id    #user_id를 세션에 저장한다.
-                return redirect('/home')
-            else:
-                return '존재하지 않는 아이디입니다.' #쿼리 데이터가 없으면 출력
-        except:
-            return "예외상황 발생"  #예외 상황 발생시 출력
+
+    try:
+        # ID/PW 조회Query 실행
+        user = User.find(user_id)
+
+        if user.user_id == user_id and user.password == password:    #쿼리 데이터가 존재하면
+            login_user(user,remember=True, duration=datetime.timedelta(days=30))
+            #session['user_id'] = user_id    #user_id를 세션에 저장한다.
+            return redirect("/home")
+        else:
+            return '비밀번호가 맞지 않습니다, 400' #아이디는 맞는데 비번 틀릴때
+    except:
+        return "존재하지 않는 아이디입니다. 400"  #테이블에 user_id 자체가 없을때        
+
 ##########################################################
 
 #####로그아웃
 @senior_school.route('/logout')
 def logout():
-    session.clear()
-    #session.pop('user_id', None)
-    redirect('/login_register')
+    logout_user() #어차피 라우팅 리퀘스트시 세션에 로그인 정보가 있다.
+    return render_template("home.html")
+    #return redirect('/home')
 ############################
 
 @senior_school.route('/login_register', methods=['GET','POST'])
