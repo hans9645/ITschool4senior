@@ -1,6 +1,7 @@
 from flask import Flask,Blueprint,request,render_template,redirect,make_response,jsonify,url_for,session
 from site_control.user_mgmt import User
 from flask_login import login_user,current_user,logout_user
+from site_control.ariticles_mgmt import Article
 import datetime
 from site_control.site_sessionmgmt import BlogSession
 import bcrypt
@@ -40,7 +41,9 @@ def home():
 
 @senior_school.route('/bullet')
 def bullet():
-    return render_template("bulletBoard.html")
+    rows=Article.get_board()
+    return render_template("bulletBoard.html", rows=rows)
+
 
 @senior_school.route('/set_register', methods=['POST'])
 def set_register():
