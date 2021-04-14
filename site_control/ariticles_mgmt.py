@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, text
 
 
-class article():
+class Article():
 
     def __init__(self,user_id, title,context):
         self.user_id=user_id
@@ -17,38 +17,16 @@ class article():
         return str(self.user_id)
 
     @staticmethod
-    def get_post(title):
+    def get_board():
         mysql_db=conn_mysqldb()
-        param={'user_id':user_id}
-        user=mysql_db.execute(text("SELECT * FROM user_info WHERE USER_ID=:user_id"),param).fetchone()
-        if not user:
-            return None
-        user=User(user_id=user[1], password=user[2],user_name=user[3])
-        return user
+        rows=mysql_db.execute("SELECT * FROM articles ORDER BY create_at DESC").fetchall() 
+        return rows
 
     @staticmethod
-
-    @staticmethod
-    def find(user_id):
+    def write_post(user_id,title,context):
         mysql_db=conn_mysqldb()
-        user=mysql_db.execute("SELECT * FROM user_info WHERE USER_ID='%s'"%str(user_id)).fetchone()
-        if not user:
-            return None
-        user=User(user_id=user[1], password=user[2],user_name=user[3])
-        return user
+        mysql_db.execute("INSERT INTO articles(user_id, title, context) VALUES ('%s','%s','%s')"%(str(user_id),str(title),str(context)))
 
-
-
-    @staticmethod
-    def create(user_id, password,user_name):
-        user=User.find(user_id)
-        if user==None:
-            mysql_db=conn_mysqldb()
-            mysql_db.execute("INSERT INTO user_info(user_id,password, user_name) VALUES ('%s','%s','%s')"%(str(user_id),str(password),str(user_name)))
-            return User.find(user_id)
-        else:
-            return None
-            
     
 
     @staticmethod
@@ -57,3 +35,5 @@ class article():
         db_cursor=mysql_db.cursor()
         deleted=mysql_db.execute("DELETE FROM user_info WHERE user_id= '%d' " %(user_id))
         return deleted
+
+
