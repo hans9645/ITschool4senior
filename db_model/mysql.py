@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine,text
 
 db = {
-    'user' : 'divertome',
-    'passwd':'9645',
+    'user' : '',
+    'passwd':'',
     'database' : 'itschool4senior',
     'charset' : 'utf8',
     'host' : 'localhost' ,
