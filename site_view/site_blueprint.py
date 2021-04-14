@@ -3,6 +3,8 @@ from site_control.user_mgmt import User
 from flask_login import login_user,current_user,logout_user
 import datetime
 from site_control.site_sessionmgmt import BlogSession
+import bcrypt
+import jwt
 
 #sqlalchemy에서 Members 클래스 가져온다
 
@@ -16,7 +18,7 @@ from site_control.site_sessionmgmt import BlogSession
 senior_school=Blueprint('senior_school',__name__)
 
 @senior_school.route('/home')
-def engA():
+def home():
     '''
     #로그인 세션정보가 없을 경우
     if not session.get('user_id'):
@@ -42,10 +44,11 @@ def bullet():
 
 @senior_school.route('/set_register', methods=['POST'])
 def set_register():
-    user=User.create(request.form['user_id'],request.form['password'],request.form['user_name'])
+    en_password=bcrypt.hashpw(request.form['password'].encode('UTF-8'),bcrypt.gensalt()) #암호화
+    user=User.create(request.form['user_id'],en_password,request.form['user_name'])
     
     if(user == None):
-        return "같은 아이디가 존재합니다, 400"
+        return "같은 아이디가 존재합니다", 400
     
     #session['user_id'] = user.user_id    #user_id를 세션에 저장한다.
     #return render_template('home.html', user_id=request.form['user_id'])
@@ -57,7 +60,7 @@ def set_register():
 @senior_school.route('/set_login', methods=['GET','POST'])
 def login():
     if request.method == 'GET':
-        return render_template("login_register.html")
+        return "wrong route",401
     else:
         user_id=request.form['user_id']
         password=request.form['password']
@@ -66,14 +69,14 @@ def login():
         # ID/PW 조회Query 실행
         user = User.find(user_id)
 
-        if user.user_id == user_id and user.password == password:    #쿼리 데이터가 존재하면
+        if user.user_id == user_id and bcrypt.checkpw(password.encode('utf-8'),user.password):    #쿼리 데이터가 존재하면
             login_user(user,remember=True, duration=datetime.timedelta(days=30))
             #session['user_id'] = user_id    #user_id를 세션에 저장한다.
             return redirect("/home")
         else:
-            return '비밀번호가 맞지 않습니다, 400' #아이디는 맞는데 비번 틀릴때
+            return '비밀번호가 맞지 않습니다', 400 #아이디는 맞는데 비번 틀릴때
     except:
-        return "존재하지 않는 아이디입니다. 400"  #테이블에 user_id 자체가 없을때        
+        return "존재하지 않는 아이디입니다", 400  #테이블에 user_id 자체가 없을때        
 
 ##########################################################
 
