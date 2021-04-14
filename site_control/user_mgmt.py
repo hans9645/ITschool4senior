@@ -2,7 +2,8 @@ from flask_login import UserMixin
 from db_model.mysql import conn_mysqldb
 from datetime import datetime
 from sqlalchemy import create_engine, text
-
+import bcrypt
+import jwt
 
 class User(UserMixin):
 
