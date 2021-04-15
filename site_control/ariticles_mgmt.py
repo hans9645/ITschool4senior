@@ -22,11 +22,16 @@ class Article():
         rows=mysql_db.execute("SELECT * FROM articles ORDER BY create_at DESC").fetchall() 
         return rows
 
+    # @staticmethod
+    # def get_article(title):
+    #     mysql_db=conn_mysqldb()
+
+
     @staticmethod
     def write_post(user_id,title,context):
         mysql_db=conn_mysqldb()
-        mysql_db.execute("INSERT INTO articles(user_id, title, context) VALUES ('%s','%s','%s')"%(str(user_id),str(title),str(context)))
-
+        a=mysql_db.execute("INSERT INTO articles(user_id, title, context) VALUES ('%s','%s','%s')"%(str(user_id),str(title),str(context)))
+        return a 
     
 
     @staticmethod
