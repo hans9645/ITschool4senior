@@ -12,4 +12,8 @@ offer senior-citizen who are not well known about elementary IT knowledge and gi
 
   add bootstrap files(html,css,js)
   
-  
+### 현재 고민중
+게시판 페이징 문제 ->sqlalchemy를 통해 하는 방법밖에 없을까?
+flash를 이용한 유저에게 알림기능 추가문제
+jwt로 일반적인 정보 교환 추가?
+javascript를 사용한 기능구현 
