@@ -14,5 +14,11 @@
     {{title}}<br>
     <h2>내용</h2>
     <div>{{row}} <br> </div>
+      
+      <form action="/delete_article" method="GET">
+       <input type="text" name="{{ title }}" style="display: none;" /><br><br>
+        
+        <input type="submit" value="업로드" /><br>
+    </form>
 </body>
 </html>
