@@ -17,3 +17,6 @@ offer senior-citizen who are not well known about elementary IT knowledge and gi
 flash를 이용한 유저에게 알림기능 추가문제
 jwt로 일반적인 정보 교환 추가?
 javascript를 사용한 기능구현 
+
+#현재 상태
+article페이지에 delete 구현하다가 말았음.
