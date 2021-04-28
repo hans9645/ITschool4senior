@@ -53,18 +53,18 @@
               <a class="nav-link active" aria-current="page" href="/home">Home</a>
             </li>
 
-         {% if current_user.user_id != null %}
+            {% if current_user.user_id != null %}
             <li class="nav-link active">
               {{current_user.user_id}}님 반갑습니다.
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="/logout">Logout</a>
             </li>
-          {% else %}
+            {% else %}
             <li class="nav-item">
               <a class="nav-link active" href="/login_register">로그인/회원가입</a>
             </li>
-          {% endif %}
+            {% endif %}
           </ul>
           <!-- Search -->
           <form class="d-flex">
@@ -244,6 +244,28 @@
             <!--<span class="text-muted">Checkmate.</span>-->
           </h2>
           <p class="lead">다양한 의견을 남겨주세요.<br> 건의사항 환영합니다.</p>
+        </div>
+        <div>
+          <table class="table table-striped table-hover">
+            <thead>
+            </thead>
+            <tbody>
+              {% if rows!= none %}
+              {% for row in rows %}
+              <tr>
+                <td>{{loop.index}}</td>
+                <td><a href="{{ url_for('senior_school.article_page',title= row[2], context = row[3]) }}">
+                    {{row[2]}}</a></td>
+                <td>{{row[1]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[4]}}</td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <h3>데이터가 존재하지 않습니다.</h3>
+              {% endif %}
+            </tbody>
+          </table>
         </div>
         <div class="col-md-5">
           <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
