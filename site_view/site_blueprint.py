@@ -67,6 +67,18 @@ def article_page(title,context):
 def write_article():
     return render_template('write_article.html')
 
+
+@senior_school.route('/delete_article/<title>')
+def delete_article_article(title):
+    if current_user.is_authenticated :
+        if Article.check_owe(current_user.user_id,title=title)==1:
+            row=Article.delete(title)
+            return redirect('/bullet')
+        else:
+            return render_template('home.html'),401
+    else:
+        return redirect('/login_register')
+
 @senior_school.route('/posting',methods=['POST'])
 def posting():
     if current_user.is_authenticated:
@@ -86,7 +98,7 @@ def posting():
 def set_register():
     en_password=bcrypt.hashpw(request.form['password'].encode('UTF-8'),bcrypt.gensalt()) #암호화
     user=User.create(request.form['user_id'],en_password,request.form['user_name'])
-    
+    print(en_password)
     if(user == None):
         return "같은 아이디가 존재합니다", 400
     

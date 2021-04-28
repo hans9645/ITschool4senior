@@ -35,10 +35,10 @@ class Article():
     
 
     @staticmethod
-    def delete(user_id):
+    def delete(user_id,title):
         mysql_db=conn_mysqldb()
         db_cursor=mysql_db.cursor()
-        deleted=mysql_db.execute("DELETE FROM user_info WHERE user_id= '%d' " %(user_id))
+        deleted=mysql_db.execute("DELETE FROM articles WHERE user_id= '%d' and title='%d'" %(str(user_id),str(title)))
         return deleted
 
 
