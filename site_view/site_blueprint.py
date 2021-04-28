@@ -135,7 +135,9 @@ def logout():
 ##########################################################################
 
 
-
+@senior_school.route('/macdonalds')
+def macdonalds():
+    return render_template('macdonalds.html')
 
 
 
