@@ -35,10 +35,12 @@ def home():
     '''
     #세션확인 후 구독이력 확인
     if current_user.is_authenticated:
-        return render_template('home.html')
+        rows = Article.get_home_board()
+        return render_template('home.html',rows=rows)
         #return render_template("home.html",user_id=current_user.user_id)#여기에 jinja2에 들어갈 변수를 같이 넣어준다.
     else:
-        return render_template('home.html')
+        rows = Article.get_home_board()
+        return render_template('home.html', rows=rows)
    
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
 

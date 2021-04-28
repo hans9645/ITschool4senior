@@ -26,6 +26,12 @@ class Article():
     # def get_article(title):
     #     mysql_db=conn_mysqldb()
 
+    @staticmethod
+    def get_home_board():
+        mysql_db = conn_mysqldb()
+        rows = mysql_db.execute(
+            "SELECT * FROM articles ORDER BY create_at DESC limit 5").fetchall()
+        return rows
 
     @staticmethod
     def write_post(user_id,title,context):
