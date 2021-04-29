@@ -45,10 +45,18 @@ def home():
 # <---  로그인 확인 후 로그인 하지않았다면 로그인 페이지, 벌써 로그인 중이라면 홈 요청 및 로그인 아이디도 같이 넘겨줌  --->
 
 
+#########it 기술##########
+@senior_school.route('/tech_description/')
+def tech():
+    return render_template("it_tech.html")
 
+@senior_school.route('/wifi_tech/')
+def wifi():
+    return render_template("wifi_desc.html")
 
-
-
+@senior_school.route('/bluetooth_tech/')
+def bluetooth_tech():
+    return render_template("bluetooth_desc.html")
 
 
 #######################################  게시판 관련 라우팅 #####################################
@@ -99,6 +107,8 @@ def posting():
 @senior_school.route('/set_register', methods=['POST'])
 def set_register():
     en_password=bcrypt.hashpw(request.form['password'].encode('UTF-8'),bcrypt.gensalt()) #암호화
+    #VARCHAR 에 맞게 decode해서 문자열로 변환
+    #en_password = en_password.decode('UTF-8')
     user=User.create(request.form['user_id'],en_password,request.form['user_name'])
     print(en_password)
     if(user == None):
